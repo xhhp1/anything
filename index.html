@@ -134,10 +134,10 @@ label { display: block; font-size: 14px; margin: 6px 0; }
 
 <!-- توجيهات الميدان -->
 <div class="container active" id="fieldContainer">
-  <h1>🚒 توجيهات الميدان 🚒</h1>
+  <h1>🛠 توجيهات الميدان 🛠</h1>
   <h2>⚙️اختصر اسمك الميداني⚙️</h2>
 
-  <input type="text" id="nameInputField" placeholder="ادخل اسمك">
+  <input type="text" id="nameInputField" placeholder="ادخل اسمك مثال (حمد بن عسكر)">
   <input type="text" id="numberInputField" placeholder="كودك الميداني مثال (G-110)">
 
   <select id="rankSelect">
@@ -172,8 +172,8 @@ label { display: block; font-size: 14px; margin: 6px 0; }
     <option value="ساندي">ساندي</option>
     <option value="بوليتو">بوليتو</option>
     <option value="جزيرة">جزيرة</option>
-    <option value="الموجه الميداني">الموجه الميداني</option>
-    <option value="نائب الموجه الميداني">نائب الموجه الميداني</option>
+    <option value="العمليات">العمليات</option>
+    <option value="نائب العمليات">نائب العمليات</option>
     <option value="مركز الاتصالات">مركز الاتصالات</option>
   </select>
 
@@ -218,7 +218,7 @@ label { display: block; font-size: 14px; margin: 6px 0; }
   <h1>📜 توجيهات التوظيف📜 </h1>
   <h2>📌اختصر توجيهك في التوظيف 📌</h2>
 
-  <input type="text" id="nameInput" placeholder="ادخل اسمك">
+  <input type="text" id="nameInput" placeholder="ادخل اسمك (حمد بن عسكر)">
   <input type="text" id="numberInput" placeholder="كودك الميداني مثال (G-110)">
 
   <label style="display:block; text-align:right; margin-top:6px">اختار توجيهك حسب التقرير:</label>
@@ -474,3 +474,4 @@ function generateNickname() {
   document.getElementById("output").innerText = [name, number, role].join(" | ");
 }
 </script>
+
