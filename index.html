@@ -159,7 +159,7 @@
     <option value="اسطول متوسط بوليتو">اسطول متوسط بوليتو</option>
     <option value="اسطول متوسط جزيرة">اسطول متوسط جزيرة</option>
   </select>
-
+<label><input type="checkbox" id="minaTech"> CD </label>
   <label><input type="checkbox" id="minaTech"> فني ميناء</label>
   <label><input type="checkbox" id="masarat"> مسارات التعديل و التزويد</label>
   <input type="text" id="masarInput" placeholder="اكتب رقم المسار فقط مثال (4)" style="display:none;">
@@ -168,6 +168,13 @@
     <option value="">اختر نوع وحدة التحكم</option>
     <option value="فني مركز تحكم">فني مركز تحكم</option>
     <option value="فني خدمات طرق">فني خدمات طرق</option>
+ </select>
+  <label><input type="checkbox" id="minaTech"> كود المعتمد </label>
+ <select id="controlOptions" style="display:none;">
+<option value="">اختر كود المعتمد </option>
+ <option value="CD">CD</option>
+ <option value="CC">CC</option>
+ <option value="CB">CB</option>
   </select>
 
   <button class="generate" onclick="generateResult()">🗞 اضغط هنا لأظهار اسمك 🗞</button>
@@ -358,3 +365,4 @@
 
 </body>
 </html>
+
