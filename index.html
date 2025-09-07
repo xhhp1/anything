@@ -267,9 +267,8 @@ function copyText(id) {
   const text = el.innerText || el.textContent || "";
   if (!text.trim()) return;
   if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(text).catch(()=>{}); // ignore errors
+    navigator.clipboard.writeText(text).catch(()=>{});
   } else {
-    // fallback
     const ta = document.createElement('textarea');
     ta.value = text;
     document.body.appendChild(ta);
@@ -279,8 +278,7 @@ function copyText(id) {
   }
 }
 
-/* Parse and format helpers for the kood-bracket behavior:
-   - bracketed form: "[ CC | G-110 ]" */
+/* Bracket helpers */
 function parseBracketed(str){
   if (!str) return null;
   const m = /^\s*\[\s*([^\|\]\s]+)\s*\|\s*([^\]]*?)\s*\]\s*$/.exec(str);
@@ -295,7 +293,7 @@ function formatNumberPart(s){
   return digits ? ("G-" + digits) : "";
 }
 
-/* Tab buttons (field/job) */
+/* Tabs */
 document.getElementById("fieldBtn").onclick = function(){
   document.getElementById("fieldContainer").classList.add("active");
   document.getElementById("jobContainer").classList.remove("active");
@@ -309,9 +307,8 @@ document.getElementById("jobBtn").onclick = function(){
   document.getElementById("fieldBtn").classList.remove("active");
 };
 
-/* Main DOM setup */
+/* Setup */
 document.addEventListener("DOMContentLoaded", function () {
-  /* Elements */
   const rankSelect = document.getElementById("rankSelect");
   const fleetToggle = document.getElementById("fleetToggle");
   const fleetBox = document.getElementById("fleetBox");
@@ -325,7 +322,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const numberField = document.getElementById("numberInputField");
   const numberFieldJob = document.getElementById("numberInput");
 
-  /* Rank -> show relevant selects */
+  /* Rank logic */
   if (rankSelect) {
     rankSelect.onchange = function () {
       const v = this.value;
@@ -343,11 +340,11 @@ document.addEventListener("DOMContentLoaded", function () {
     fleetBox.style.display = fleetToggle.checked ? "block" : "none";
   }
 
-  /* MinaTech <-> Masarat mutual exclusion */
+  /* MinaTech & Masarat mutual exclusion ONLY between themselves (not affecting kood) */
   if (minaTech) {
     minaTech.onchange = function () {
-      if (this.checked) {
-        if (masarat) masarat.checked = false;
+      if (this.checked && masarat) {
+        masarat.checked = false;
         if (masarInput) masarInput.style.display = "none";
       }
     };
@@ -368,49 +365,33 @@ document.addEventListener("DOMContentLoaded", function () {
     controlOptions.style.display = controlUnit.checked ? "block" : "none";
   }
 
-  /* Kood (approved code) toggle & behavior:
-     - show the dropdown when checked
-     - selecting a code prefixes the number field in bracket format
-     - unchecking removes the bracket and keeps only the G- part */
+  /* Kood independent toggle */
   if (koodToggle && koodOptions && numberField) {
     koodToggle.onchange = function () {
       koodOptions.style.display = this.checked ? "block" : "none";
-      if (!this.checked) {
-        // remove bracket if present
-        const parsed = parseBracketed(numberField.value);
-        if (parsed) numberField.value = formatNumberPart(parsed.part);
-        koodOptions.value = "";
-      }
+      // Notice: we NO LONGER clear number field when unchecking
     };
     koodOptions.onchange = function () {
       const val = this.value;
-      if (!val) {
-        const parsed = parseBracketed(numberField.value);
-        if (parsed) numberField.value = formatNumberPart(parsed.part);
-        return;
-      }
-      // take existing numeric part (whether bracketed or not), format it, then put bracket
+      if (!val) return;
       const parsedNow = parseBracketed(numberField.value);
       const rawPart = parsedNow ? parsedNow.part : numberField.value;
       const formattedPart = formatNumberPart(rawPart) || "G-";
       numberField.value = makeBracketed(val, formattedPart);
     };
-    // initial display
     koodOptions.style.display = koodToggle.checked ? "block" : "none";
   }
 
-  /* Format number input fields to G-<digits> and keep bracket prefix if present */
+  /* Format number fields */
   function handleNumberFieldInput(el) {
     const parsed = parseBracketed(el.value);
     if (parsed) {
-      // preserve code, format the numeric part
       const afterPipe = el.value.replace(/^\s*\[\s*[^\|\]\s]+\s*\|\s*/,'').replace(/\s*\]\s*$/,'');
       el.value = makeBracketed(parsed.code, formatNumberPart(afterPipe));
     } else {
       el.value = formatNumberPart(el.value);
     }
   }
-
   if (numberField) {
     numberField.oninput = function () { handleNumberFieldInput(this); };
     numberField.onpaste = function () { setTimeout(()=>handleNumberFieldInput(this), 0); };
@@ -421,8 +402,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 });
 
-/* generateResult - builds the final string exactly like your preferred "working" sample,
-   and supports kood (koodToggle/koodOptions) safely */
+/* generateResult */
 function generateResult() {
   const name = (document.getElementById("nameInputField").value || "").trim();
   const number = (document.getElementById("numberInputField").value || "").trim();
@@ -437,11 +417,8 @@ function generateResult() {
   const masarVal = (document.getElementById("masarInput").value || "").trim();
   const controlChecked = document.getElementById("controlUnit").checked;
   const controlVal = document.getElementById("controlOptions").value;
-
-  // kood (may or may not exist on the page)
-  const koodToggleEl = document.getElementById("koodToggle");
-  const koodChecked = koodToggleEl ? koodToggleEl.checked : false;
-  const koodVal = document.getElementById("koodOptions") ? document.getElementById("koodOptions").value : "";
+  const koodChecked = document.getElementById("koodToggle").checked;
+  const koodVal = document.getElementById("koodOptions").value;
 
   if (!name || !number) {
     document.getElementById("resultOutput").innerText = "يرجى ملء الاسم والكود.";
@@ -449,11 +426,7 @@ function generateResult() {
   }
 
   const parts = [];
-
-  // if neither minaTech nor masarat, show name
   if (!minaTechChecked && !masaratChecked) parts.push(name);
-
-  // always include the number (number may already contain kood bracket)
   parts.push(number);
 
   if (minaTechChecked) {
@@ -461,7 +434,6 @@ function generateResult() {
   } else if (masaratChecked && masarVal) {
     parts.push("مسار " + masarVal);
   } else {
-    // rank/region logic (same as your preferred example)
     if (isValidSelection(rank)) {
       if (rank === "اشراف منطقه" && isValidSelection(subRegion)) {
         parts.push(subRegion);
@@ -473,12 +445,11 @@ function generateResult() {
         parts.push(rank);
       }
     }
-
     if (fleetChecked && isValidSelection(fleetVal)) parts.push(fleetVal);
     if (controlChecked && isValidSelection(controlVal)) parts.push(controlVal);
   }
 
-  // Append كود only if it's checked AND not already represented in the number field bracket
+  // Kood is now completely independent — user can select it with anything else
   if (koodChecked && isValidSelection(koodVal)) {
     const parsedNumber = parseBracketed(number);
     if (!(parsedNumber && parsedNumber.code === koodVal)) {
@@ -489,7 +460,7 @@ function generateResult() {
   document.getElementById("resultOutput").innerText = parts.join(" | ");
 }
 
-/* generateNickname for job container */
+/* generateNickname */
 function generateNickname() {
   const name = (document.getElementById("nameInput").value || "").trim();
   const number = (document.getElementById("numberInput").value || "").trim();
