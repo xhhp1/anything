@@ -39,9 +39,8 @@
       display: inline-block;
       font-size: 18px;
     }
-  </style>
+</style>
 <style>
-/* CSS same as before — all inline so GitHub Pages won’t strip it */
 body {
   font-family: Arial, sans-serif;
   background-color: #111;
@@ -128,7 +127,6 @@ label { display: block; font-size: 14px; margin: 6px 0; }
 </head>
 <body>
 
-
 <div class="toggle-buttons">
   <button id="fieldBtn" class="active">توجيهات الميدان</button>
   <button id="jobBtn">توجيهات التوظيف</button>
@@ -174,8 +172,8 @@ label { display: block; font-size: 14px; margin: 6px 0; }
     <option value="ساندي">ساندي</option>
     <option value="بوليتو">بوليتو</option>
     <option value="جزيرة">جزيرة</option>
-    <option value="العمليات">العمليات</option>
-    <option value="نائب العمليات">نائب العمليات</option>
+    <option value="الموجه الميداني">الموجه الميداني</option>
+    <option value="نائب الموجه الميداني">نائب الموجه الميداني</option>
     <option value="مركز الاتصالات">مركز الاتصالات</option>
   </select>
 
@@ -191,11 +189,9 @@ label { display: block; font-size: 14px; margin: 6px 0; }
     <option value="اسطول متوسط بوليتو">اسطول متوسط بوليتو</option>
     <option value="اسطول متوسط جزيرة">اسطول متوسط جزيرة</option>
   </select>
-
   <label><input type="checkbox" id="minaTech"> فني ميناء</label>
   <label><input type="checkbox" id="masarat"> مسارات التعديل و التزويد</label>
   <input type="text" id="masarInput" placeholder="اكتب رقم المسار فقط مثال (4)" style="display:none;">
-
   <label><input type="checkbox" id="controlUnit"> وحدة تحكم</label>
   <select id="controlOptions" style="display:none;">
     <option value="">اختر نوع وحدة التحكم</option>
@@ -203,10 +199,10 @@ label { display: block; font-size: 14px; margin: 6px 0; }
     <option value="فني خدمات طرق">فني خدمات طرق</option>
   </select>
 
-  <!-- ✅ FIXED كود المعتمد SECTION -->
-  <label><input type="checkbox" id="approvedCodeToggle"> كود المعتمد </label>
-  <select id="approvedCodeOptions" style="display:none;">
-    <option value="">اختر كود المعتمد </option>
+  <!-- كود المعتمد -->
+  <label><input type="checkbox" id="koodToggle"> كود المعتمد </label>
+  <select id="koodOptions" style="display:none;">
+    <option value="">اختر كود المعتمد</option>
     <option value="CD">CD</option>
     <option value="CC">CC</option>
     <option value="CB">CB</option>
@@ -260,166 +256,100 @@ label { display: block; font-size: 14px; margin: 6px 0; }
 </div>
 
 <script>
-  function isValidSelection(val) {
-    return val && String(val).trim() !== "" && !String(val).trim().startsWith("اختر");
-  }
+function isValidSelection(val) {
+  return val && String(val).trim() !== "" && !String(val).trim().startsWith("اختر");
+}
+function copyText(id) {
+  const text = document.getElementById(id).innerText;
+  if (text.trim()) navigator.clipboard.writeText(text);
+}
+document.getElementById("fieldBtn").addEventListener("click", function(){
+  document.getElementById("fieldContainer").classList.add("active");
+  document.getElementById("jobContainer").classList.remove("active");
+  this.classList.add("active");
+  document.getElementById("jobBtn").classList.remove("active");
+});
+document.getElementById("jobBtn").addEventListener("click", function(){
+  document.getElementById("jobContainer").classList.add("active");
+  document.getElementById("fieldContainer").classList.remove("active");
+  this.classList.add("active");
+  document.getElementById("fieldBtn").classList.remove("active");
+});
 
-  function copyText(id) {
-    const text = document.getElementById(id).innerText;
-    if (text.trim()) {
-      navigator.clipboard.writeText(text);
-    }
-  }
-
-  document.getElementById("fieldBtn").addEventListener("click", function(){
-    document.getElementById("fieldContainer").classList.add("active");
-    document.getElementById("jobContainer").classList.remove("active");
-    this.classList.add("active");
-    document.getElementById("jobBtn").classList.remove("active");
-  });
-  document.getElementById("jobBtn").addEventListener("click", function(){
-    document.getElementById("jobContainer").classList.add("active");
-    document.getElementById("fieldContainer").classList.remove("active");
-    this.classList.add("active");
-    document.getElementById("fieldBtn").classList.remove("active");
-  });
-
-  document.addEventListener("DOMContentLoaded", function () {
-    const rankSelect = document.getElementById("rankSelect");
-
-    rankSelect.addEventListener("change", function () {
-      document.getElementById("subRegion").style.display =
-        (this.value === "اشراف منطقه") ? "block" : "none";
-
-      document.getElementById("subRegionTrainee").style.display =
-        (this.value === "اشراف منطقه متدرب") ? "block" : "none";
-
-      document.getElementById("regionNames").style.display =
-        (this.value === "فني") ? "block" : "none";
-    });
-
-    document.getElementById("fleetToggle").addEventListener("change", function () {
-      document.getElementById("fleetBox").style.display = this.checked ? "block" : "none";
-    });
-
-    const minaTech = document.getElementById("minaTech");
-    const masarat = document.getElementById("masarat");
-
-    minaTech.addEventListener("change", function () {
-      if (this.checked) {
-        masarat.checked = false;
-        document.getElementById("masarInput").style.display = "none";
-      }
-    });
-
-    masarat.addEventListener("change", function () {
-      document.getElementById("masarInput").style.display = this.checked ? "block" : "none";
-      if (this.checked) minaTech.checked = false;
-    });
-
-    document.getElementById("controlUnit").addEventListener("change", function () {
-      document.getElementById("controlOptions").style.display = this.checked ? "block" : "none";
-    });
-
-    // ✅ كود المعتمد SHOW/HIDE + UPDATE
-    const approvedToggle = document.getElementById("approvedCodeToggle");
-    const approvedSelect = document.getElementById("approvedCodeOptions");
-    const numberInputField = document.getElementById("numberInputField");
-
-    approvedToggle.addEventListener("change", function () {
-      approvedSelect.style.display = this.checked ? "block" : "none";
-      if (!this.checked) approvedSelect.value = "";
-    });
-
-    approvedSelect.addEventListener("change", function () {
-      let currentVal = numberInputField.value.trim();
-      let onlyDigits = currentVal.replace(/^[A-Z]{2}\s*\|\s*/, "");
-      if (this.value) {
-        numberInputField.value = `${this.value} | ${onlyDigits || "G-"}`;
-      } else {
-        numberInputField.value = onlyDigits;
-      }
-    });
-
-    const num1 = document.getElementById("numberInputField");
-    const num2 = document.getElementById("numberInput");
-
-    function handleGPrefix(el) {
-      let digits = (el.value || "").replace(/[^0-9]/g, "");
-      let hasPrefix = /^[A-Z]{2}\s*\|/.test(el.value);
-      el.value = digits ? (hasPrefix ? el.value.split('|')[0] + ' | G-' + digits : "G-" + digits) : "";
-    }
-
-    num1.addEventListener("input", function () { handleGPrefix(this); });
-    num2.addEventListener("input", function () { handleGPrefix(this); });
-
-    num1.addEventListener("paste", function () { setTimeout(() => handleGPrefix(this), 0); });
-    num2.addEventListener("paste", function () { setTimeout(() => handleGPrefix(this), 0); });
+document.addEventListener("DOMContentLoaded", function () {
+  const rankSelect = document.getElementById("rankSelect");
+  rankSelect.addEventListener("change", function () {
+    document.getElementById("subRegion").style.display = (this.value === "اشراف منطقه") ? "block" : "none";
+    document.getElementById("subRegionTrainee").style.display = (this.value === "اشراف منطقه متدرب") ? "block" : "none";
+    document.getElementById("regionNames").style.display = (this.value === "فني") ? "block" : "none";
   });
 
-  function generateResult() {
-    const name = (document.getElementById("nameInputField").value || "").trim();
-    const number = (document.getElementById("numberInputField").value || "").trim();
-    const rank = document.getElementById("rankSelect").value;
-    const subRegion = document.getElementById("subRegion").value;
-    const subRegionTrainee = document.getElementById("subRegionTrainee").value;
-    const regionName = document.getElementById("regionNames").value;
-    const fleetChecked = document.getElementById("fleetToggle").checked;
-    const fleetVal = document.getElementById("fleetBox").value;
-    const minaTechChecked = document.getElementById("minaTech").checked;
-    const masaratChecked = document.getElementById("masarat").checked;
-    const masarVal = (document.getElementById("masarInput").value || "").trim();
-    const controlChecked = document.getElementById("controlUnit").checked;
-    const controlVal = document.getElementById("controlOptions").value;
+  document.getElementById("fleetToggle").addEventListener("change", function () {
+    document.getElementById("fleetBox").style.display = this.checked ? "block" : "none";
+  });
 
-    if (!number) {
-      document.getElementById("resultOutput").innerText = "يرجى ملء الكود.";
-      return;
-    }
+  document.getElementById("controlUnit").addEventListener("change", function () {
+    document.getElementById("controlOptions").style.display = this.checked ? "block" : "none";
+  });
 
-    const parts = [];
+  document.getElementById("koodToggle").addEventListener("change", function () {
+    document.getElementById("koodOptions").style.display = this.checked ? "block" : "none";
+    if (!this.checked) document.getElementById("koodOptions").value = "";
+  });
 
-    if (!minaTechChecked && !masaratChecked) parts.push(name);
-    parts.push(number);
-
-    if (minaTechChecked) {
-      parts.push("فني ميناء");
-    } else if (masaratChecked && masarVal) {
-      parts.push("مسار " + masarVal);
+  document.getElementById("koodOptions").addEventListener("change", function () {
+    const numberField = document.getElementById("numberInputField");
+    const val = this.value;
+    if (val) {
+      const current = numberField.value.replace(/^\s*\[(.*?)\]\s*/, "").trim();
+      numberField.value = `[ ${val} | ${current || "G-"} ]`;
     } else {
-      if (isValidSelection(rank)) {
-        if (rank === "اشراف منطقه" && isValidSelection(subRegion)) {
-          parts.push(subRegion);
-        } else if (rank === "اشراف منطقه متدرب" && isValidSelection(subRegionTrainee)) {
-          parts.push(subRegionTrainee);
-        } else if (rank === "فني" && isValidSelection(regionName)) {
-          parts.push(regionName);
-        } else if (rank !== "فني") {
-          parts.push(rank);
-        }
-      }
-      if (fleetChecked && isValidSelection(fleetVal)) parts.push(fleetVal);
-      if (controlChecked && isValidSelection(controlVal)) parts.push(controlVal);
+      numberField.value = numberField.value.replace(/^\s*\[.*?\]\s*/, "").trim();
     }
+  });
 
-    document.getElementById("resultOutput").innerText = parts.join(" | ");
+  const num1 = document.getElementById("numberInputField");
+  const num2 = document.getElementById("numberInput");
+  function handleGPrefix(el) {
+    let digits = (el.value || "").replace(/[^0-9]/g, "");
+    el.value = digits ? ("G-" + digits) : "";
   }
+  num1.addEventListener("input", function () { handleGPrefix(this); });
+  num2.addEventListener("input", function () { handleGPrefix(this); });
+  num1.addEventListener("paste", function () { setTimeout(() => handleGPrefix(this), 0); });
+  num2.addEventListener("paste", function () { setTimeout(() => handleGPrefix(this), 0); });
+});
 
-  function generateNickname() {
-    const name = (document.getElementById("nameInput").value || "").trim();
-    const number = (document.getElementById("numberInput").value || "").trim();
-    const role = document.getElementById("roleSelect").value;
+function generateResult() {
+  const name = (document.getElementById("nameInputField").value || "").trim();
+  const number = (document.getElementById("numberInputField").value || "").trim();
+  const rank = document.getElementById("rankSelect").value;
+  const subRegion = document.getElementById("subRegion").value;
+  const subRegionTrainee = document.getElementById("subRegionTrainee").value;
+  const regionName = document.getElementById("regionNames").value;
+  const fleetChecked = document.getElementById("fleetToggle").checked;
+  const fleetVal = document.getElementById("fleetBox").value;
+  const minaTechChecked = document.getElementById("minaTech").checked;
+  const masaratChecked = document.getElementById("masarat").checked;
+  const masarVal = (document.getElementById("masarInput").value || "").trim();
+  const controlUnitChecked = document.getElementById("controlUnit").checked;
+  const approvedCodeChecked = document.getElementById("approvedCodeToggle").checked;
+  const approvedCodeVal = document.getElementById("approvedCodeOptions").value;
 
-    if (!name || !number || !isValidSelection(role)) {
-      document.getElementById("output").innerText = "يرجى ملء جميع الحقول.";
-      return;
-    }
+  let result = "";
 
-    document.getElementById("output").innerText = [name, number, role].join(" | ");
-  }
-</script>
+  if (rank) result += `[${rank}] `;
+  if (regionName) result += `${regionName} `;
+  if (subRegion) result += `- ${subRegion} `;
+  if (subRegionTrainee) result += `(${subRegionTrainee}) `;
+  if (fleetChecked && fleetVal) result += `| أسطول ${fleetVal} `;
+  if (minaTechChecked) result += `| ميناء تقني `;
+  if (masaratChecked && masarVal) result += `| مسار ${masarVal} `;
+  if (controlUnitChecked) result += `| وحدة التحكم `;
+  if (approvedCodeChecked && approvedCodeVal) result += `| كود ${approvedCodeVal} `;
 
-</body>
-</html>
+  if (name) result += `- ${name}`;
+  if (number) result += ` (${number})`;
 
-
+  document.getElementById("resultOutput").textContent = result.trim();
+}
