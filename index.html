@@ -256,70 +256,6 @@ label { display: block; font-size: 14px; margin: 6px 0; }
 </div>
 
 <script>
-function isValidSelection(val) {
-  return val && String(val).trim() !== "" && !String(val).trim().startsWith("اختر");
-}
-function copyText(id) {
-  const text = document.getElementById(id).innerText;
-  if (text.trim()) navigator.clipboard.writeText(text);
-}
-document.getElementById("fieldBtn").addEventListener("click", function(){
-  document.getElementById("fieldContainer").classList.add("active");
-  document.getElementById("jobContainer").classList.remove("active");
-  this.classList.add("active");
-  document.getElementById("jobBtn").classList.remove("active");
-});
-document.getElementById("jobBtn").addEventListener("click", function(){
-  document.getElementById("jobContainer").classList.add("active");
-  document.getElementById("fieldContainer").classList.remove("active");
-  this.classList.add("active");
-  document.getElementById("fieldBtn").classList.remove("active");
-});
-
-document.addEventListener("DOMContentLoaded", function () {
-  const rankSelect = document.getElementById("rankSelect");
-  rankSelect.addEventListener("change", function () {
-    document.getElementById("subRegion").style.display = (this.value === "اشراف منطقه") ? "block" : "none";
-    document.getElementById("subRegionTrainee").style.display = (this.value === "اشراف منطقه متدرب") ? "block" : "none";
-    document.getElementById("regionNames").style.display = (this.value === "فني") ? "block" : "none";
-  });
-
-  document.getElementById("fleetToggle").addEventListener("change", function () {
-    document.getElementById("fleetBox").style.display = this.checked ? "block" : "none";
-  });
-
-  document.getElementById("controlUnit").addEventListener("change", function () {
-    document.getElementById("controlOptions").style.display = this.checked ? "block" : "none";
-  });
-
-  document.getElementById("koodToggle").addEventListener("change", function () {
-    document.getElementById("koodOptions").style.display = this.checked ? "block" : "none";
-    if (!this.checked) document.getElementById("koodOptions").value = "";
-  });
-
-  document.getElementById("koodOptions").addEventListener("change", function () {
-    const numberField = document.getElementById("numberInputField");
-    const val = this.value;
-    if (val) {
-      const current = numberField.value.replace(/^\s*\[(.*?)\]\s*/, "").trim();
-      numberField.value = `[ ${val} | ${current || "G-"} ]`;
-    } else {
-      numberField.value = numberField.value.replace(/^\s*\[.*?\]\s*/, "").trim();
-    }
-  });
-
-  const num1 = document.getElementById("numberInputField");
-  const num2 = document.getElementById("numberInput");
-  function handleGPrefix(el) {
-    let digits = (el.value || "").replace(/[^0-9]/g, "");
-    el.value = digits ? ("G-" + digits) : "";
-  }
-  num1.addEventListener("input", function () { handleGPrefix(this); });
-  num2.addEventListener("input", function () { handleGPrefix(this); });
-  num1.addEventListener("paste", function () { setTimeout(() => handleGPrefix(this), 0); });
-  num2.addEventListener("paste", function () { setTimeout(() => handleGPrefix(this), 0); });
-});
-
 function generateResult() {
   const name = (document.getElementById("nameInputField").value || "").trim();
   const number = (document.getElementById("numberInputField").value || "").trim();
@@ -332,24 +268,41 @@ function generateResult() {
   const minaTechChecked = document.getElementById("minaTech").checked;
   const masaratChecked = document.getElementById("masarat").checked;
   const masarVal = (document.getElementById("masarInput").value || "").trim();
-  const controlUnitChecked = document.getElementById("controlUnit").checked;
-  const approvedCodeChecked = document.getElementById("approvedCodeToggle").checked;
-  const approvedCodeVal = document.getElementById("approvedCodeOptions").value;
+  const controlChecked = document.getElementById("controlUnit").checked;
+  const controlVal = document.getElementById("controlOptions").value;
+  const koodChecked = document.getElementById("koodToggle").checked;
+  const koodVal = document.getElementById("koodOptions").value;
 
-  let result = "";
+  if (!name || !number) {
+    document.getElementById("resultOutput").innerText = "يرجى ملء الاسم والكود.";
+    return;
+  }
 
-  if (rank) result += `[${rank}] `;
-  if (regionName) result += `${regionName} `;
-  if (subRegion) result += `- ${subRegion} `;
-  if (subRegionTrainee) result += `(${subRegionTrainee}) `;
-  if (fleetChecked && fleetVal) result += `| أسطول ${fleetVal} `;
-  if (minaTechChecked) result += `| ميناء تقني `;
-  if (masaratChecked && masarVal) result += `| مسار ${masarVal} `;
-  if (controlUnitChecked) result += `| وحدة التحكم `;
-  if (approvedCodeChecked && approvedCodeVal) result += `| كود ${approvedCodeVal} `;
+  const parts = [];
+  if (!minaTechChecked && !masaratChecked) parts.push(name);
+  parts.push(number);
 
-  if (name) result += `- ${name}`;
-  if (number) result += ` (${number})`;
+  if (minaTechChecked) {
+    parts.push("فني ميناء");
+  } else if (masaratChecked && masarVal) {
+    parts.push("مسار " + masarVal);
+  } else {
+    if (isValidSelection(rank)) {
+      if (rank === "اشراف منطقه" && isValidSelection(subRegion)) {
+        parts.push(subRegion);
+      } else if (rank === "اشراف منطقه متدرب" && isValidSelection(subRegionTrainee)) {
+        parts.push(subRegionTrainee);
+      } else if (rank === "فني" && isValidSelection(regionName)) {
+        parts.push(regionName);
+      } else if (rank !== "فني") {
+        parts.push(rank);
+      }
+    }
+    if (fleetChecked && isValidSelection(fleetVal)) parts.push(fleetVal);
+    if (controlChecked && isValidSelection(controlVal)) parts.push(controlVal);
+  }
 
-  document.getElementById("resultOutput").textContent = result.trim();
+  if (koodChecked && isValidSelection(koodVal)) parts.push("كود " + koodVal);
+
+  document.getElementById("resultOutput").innerText = parts.join(" | ");
 }
