@@ -333,7 +333,7 @@
 <button type="button" onclick="copyReport()">نسخ التقرير</button>
   </form>
   <div class="export">
-    <h2 style="color:#00d4ff; text-align:center;">نموذج التقرير:</h2>
+    <h2 style="color:#ced17b; text-align:center;">نموذج التقرير:</h2>
     <pre id="reportPreview"></pre>
   </div>
 
@@ -381,7 +381,7 @@
       };
       const codeInput = document.createElement('input');
       codeInput.type = 'text';
-      codeInput.placeholder = 'رقم الوحدة (مثال: 012)';
+      codeInput.placeholder = 'رقم الوحدة (مثال : 012)';
       codeInput.className = 'unit-code';
       codeInput.oninput = updatePreview;
 
@@ -494,4 +494,5 @@ report += generateLine("لوس:", getUnits('los'), null, true);
   </script>
 </body>
 </html>
+
 
