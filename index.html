@@ -6,19 +6,39 @@
     body {
       font-family: 'Cairo', Arial, sans-serif;
       color: #222;
-      padding: 20px;
+      margin: 0;
       background: url('https://github.com/mohamedelsawaf9193/garage-report/raw/main/mechan.png') center center fixed;
       background-size: cover;
       min-height: 100vh;
-      direction: ltr;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
-    h1 { color: #1a73e8; text-align:left;}
-    .section-block { background: #fafafa; margin-bottom: 20px; padding: 15px; border-radius: 6px; border: 1px solid #eee;}
-    label { font-weight: bold; margin-top:10px; display:block; text-align:left;}
+    .container {
+      background: rgba(255, 255, 255, 0.9);
+      padding: 20px;
+      border-radius: 12px;
+      max-width: 700px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+    h1 { color: #1a73e8; margin-bottom: 20px; }
+    form { display: flex; flex-direction: column; align-items: center; }
+    .section-block {
+      background: #fafafa;
+      margin-bottom: 15px;
+      padding: 15px;
+      border-radius: 6px;
+      border: 1px solid #eee;
+      width: 100%;
+      text-align: left;
+    }
+    label { font-weight: bold; margin-top:10px; display:block; text-align:left; }
     input, select { padding: 7px; margin: 5px 0 10px 0; border-radius: 4px; border: 1px solid #ccc; }
     button { padding: 7px 18px; background: #1a73e8; color: #fff; border: none; border-radius: 4px; cursor: pointer; font-size: 1rem;}
     button:hover { background: #1857c1; }
-    .export { margin-top: 20px; }
+    .export { margin-top: 20px; width: 100%; text-align: left; }
     .units-list { margin-bottom:10px; }
     .unit-prefix, .unit-code { display:inline-block; }
     .unit-prefix { width:65px; }
@@ -27,7 +47,7 @@
     .remove-btn:hover { background:#b71c1c;}
     .add-unit-btn { background: #43aa8b; margin-left: 5px;}
     .add-unit-btn:hover { background: #218c5b;}
-    .group-title { font-weight: bold; color: #17539e; margin-top: 20px; text-align:left;}
+    .group-title { font-weight: bold; color: #17539e; margin-top: 10px; text-align:left;}
     .unit-row { margin-bottom:4px; }
     .fleet-count { font-size:1.2em; font-weight:bold; color:#187347; margin-bottom:7px; text-align:left;}
     .time-input { width:110px; margin-right:7px; margin-left:7px; }
@@ -343,3 +363,4 @@ report += generateLine("لوس:", getUnits('los'), null, true);
   </script>
 </body>
 </html>
+
