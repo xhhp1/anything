@@ -1,127 +1,196 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="ltr">
 <head>
   <meta charset="UTF-8">
   <title>تقرير كراج الميكانيكي</title>
   <style>
-    body {
+    /* Reset & Font */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
       font-family: 'Cairo', Arial, sans-serif;
-      color: #f1f1f1;
+    }
+
+    body {
+      background: linear-gradient(135deg, #0d1b2a, #1b263b);
+      color: #fff;
       padding: 20px;
-      background: #1a1a1a url('https://github.com/mohamedelsawaf9193/garage-report/raw/main/mechan.png') center center fixed;
-      background-size: cover;
       min-height: 100vh;
     }
+
     h1 {
-      color: #f9d85d;
+      color: #00d4ff;
       text-align: center;
-      font-size: 1.8rem;
-      margin-bottom: 20px;
+      margin-bottom: 25px;
+      font-size: 2rem;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.6);
     }
+
+    form {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
     .section-block {
-      background: #111;
-      margin-bottom: 15px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.1);
+      margin-bottom: 20px;
       padding: 15px;
-      border-radius: 12px;
-      border: 1px solid #333;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+      text-align: center;
     }
+
     label {
       font-weight: bold;
-      margin-top: 8px;
+      margin-top: 10px;
       display: block;
-      text-align: right;
+      color: #00d4ff;
+      text-align: center;
     }
+
     input, select {
-      width: 95%;
-      padding: 10px;
-      margin-top: 6px;
-      margin-bottom: 12px;
-      border-radius: 8px;
-      border: 1px solid #444;
-      background: #222;
-      color: #f1f1f1;
-      font-size: 1rem;
+      padding: 7px;
+      margin: 8px 0;
+      border-radius: 4px;
+      border: 1px solid #555;
+      background: rgba(0,0,0,0.3);
+      color: #fff;
+      font-size: 0.95rem;
+      text-align: center;
     }
-    input::placeholder {
-      color: #888;
-    }
+
     button {
-      display: block;
-      width: 100%;
-      padding: 10px;
-      background: #f9d85d;
+      padding: 7px 18px;
+      background: #00d4ff;
       color: #000;
       border: none;
-      border-radius: 10px;
+      border-radius: 4px;
       cursor: pointer;
       font-size: 1rem;
-      font-weight: bold;
-      margin-top: 8px;
+      transition: 0.2s;
     }
+
     button:hover {
-      background: #f7c93b;
+      background: #00aacc;
     }
+
     .export {
-      margin-top: 25px;
-      background: #111;
-      padding: 15px;
-      border-radius: 12px;
-      border: 1px solid #333;
+      max-width: 900px;
+      margin: 0 auto;
+      margin-top: 20px;
     }
+
+    .units-list {
+      margin-bottom: 10px;
+    }
+
+    .unit-prefix, .unit-code {
+      display: inline-block;
+    }
+
+    .unit-prefix {
+      width: 65px;
+    }
+
+    .unit-code {
+      width: 70px;
+    }
+
+    .remove-btn {
+      background: #ff4d4d;
+      margin-left: 5px;
+      border: none;
+      border-radius: 3px;
+      color: white;
+      padding: 3px 9px;
+      font-size: 1.1em;
+      cursor: pointer;
+    }
+
+    .remove-btn:hover {
+      background: #cc0000;
+    }
+
+    .add-unit-btn {
+      background: #43aa8b;
+      margin-left: 5px;
+    }
+
+    .add-unit-btn:hover {
+      background: #218c5b;
+    }
+
     .group-title {
       font-weight: bold;
-      font-size: 1.1rem;
-      color: #f9d85d;
+      color: #ffd60a;
       margin-bottom: 10px;
-      text-align: right;
+      text-align: center;
     }
-    .units-list {
-      margin-bottom: 8px;
-    }
+
     .unit-row {
+      margin-bottom: 4px;
+    }
+
+    .fleet-count {
+      font-size: 1.2em;
+      font-weight: bold;
+      color: #ffd60a;
+      margin-bottom: 7px;
+      text-align: center;
+    }
+
+    .time-input {
+      width: 110px;
+      margin: 5px;
+    }
+
+    .time-row {
       display: flex;
+      justify-content: center;
       align-items: center;
-      gap: 8px;
-      margin-bottom: 6px;
+      margin-bottom: 10px;
     }
-    .unit-prefix, .unit-code {
-      background: #222;
-      border: 1px solid #444;
-      border-radius: 6px;
-      color: #f1f1f1;
-      padding: 8px;
-      font-size: 1rem;
+
+    .ampm-select {
+      width: 55px;
+      margin-left: 5px;
     }
-    .unit-prefix { width: 80px; }
-    .unit-code { width: 120px; }
-    .remove-btn {
-      background: #e63946;
-      border: none;
-      border-radius: 50%;
-      color: white;
-      padding: 6px 12px;
-      font-size: 1.3em;
-      cursor: pointer;
+
+    .report-input {
+      width: 70px;
+      margin: 5px;
     }
-    .remove-btn:hover { background: #b71c1c; }
+
     #reportPreview {
-      background: #000;
-      color: #f1f1f1;
+      background: rgba(0,0,0,0.4);
       padding: 10px;
-      border-radius: 8px;
+      border-radius: 4px;
+      text-align: left;
+      color: #fff;
       white-space: pre-wrap;
-      text-align: right;
+      line-height: 1.4;
     }
+
     .disabled-input {
-      background: #333;
-      color: #888;
+      background: #555;
+      color: #999;
+    }
+	    body {
+      font-family: 'Cairo', Arial, sans-serif;
+      color: #222;
+      padding: 20px;
+      background: url('https://github.com/mohamedelsawaf9193/garage-report/raw/main/mechan.png') center center fixed;
+      background-size: cover;
+      min-height: 100vh;
+      direction: ltr;
     }
   </style>
 </head>
 <body>
   <h1>تقرير كراج الميكانيكي</h1>
-  <form id="reportForm" onsubmit="return false;">
+ <form id="reportForm" onsubmit="return false;">
     <div class="section-block">
       <label>رقم التقرير:</label>
       <input type="text" id="reportNumber" class="report-input" placeholder="مثال: 5" oninput="updatePreview()">
@@ -264,11 +333,12 @@
 <button type="button" onclick="copyReport()">نسخ التقرير</button>
   </form>
   <div class="export">
-    <h2>نموذج التقرير:</h2>
+    <h2 style="color:#00d4ff; text-align:center;">نموذج التقرير:</h2>
     <pre id="reportPreview"></pre>
   </div>
+
   <script>
-  function copyReport() {
+ function copyReport() {
   const reportText = document.getElementById('reportPreview').textContent;
   navigator.clipboard.writeText(reportText).then(() => {
     alert("تم نسخ التقرير بنجاح ✅");
@@ -422,6 +492,5 @@ report += generateLine("لوس:", getUnits('los'), null, true);
     document.getElementById('fromTime').addEventListener('input', updatePreview);
     document.getElementById('toTime').addEventListener('input', updatePreview);
   </script>
+</body>
 </html>
-
-
