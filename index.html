@@ -34,13 +34,14 @@
     }
     input, select {
       width: 95%;
-      padding: 8px;
+      padding: 10px;
       margin-top: 6px;
       margin-bottom: 12px;
       border-radius: 8px;
       border: 1px solid #444;
       background: #222;
       color: #f1f1f1;
+      font-size: 1rem;
     }
     input::placeholder {
       color: #888;
@@ -78,24 +79,29 @@
     .units-list {
       margin-bottom: 8px;
     }
+    .unit-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
     .unit-prefix, .unit-code {
-      display: inline-block;
       background: #222;
       border: 1px solid #444;
       border-radius: 6px;
       color: #f1f1f1;
-      padding: 6px;
-      margin: 2px;
+      padding: 8px;
+      font-size: 1rem;
     }
-    .unit-prefix { width: 60px; }
-    .unit-code { width: 80px; }
+    .unit-prefix { width: 80px; }
+    .unit-code { width: 120px; }
     .remove-btn {
       background: #e63946;
       border: none;
       border-radius: 50%;
       color: white;
-      padding: 5px 9px;
-      font-size: 1.1em;
+      padding: 6px 12px;
+      font-size: 1.3em;
       cursor: pointer;
     }
     .remove-btn:hover { background: #b71c1c; }
@@ -417,4 +423,5 @@ report += generateLine("لوس:", getUnits('los'), null, true);
     document.getElementById('toTime').addEventListener('input', updatePreview);
   </script>
 </html>
+
 
