@@ -23,7 +23,10 @@
       text-align: center;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     }
-    h1 { color: #1a73e8; margin-bottom: 20px; }
+    h1 { 
+      color: #2596be;
+      margin-bottom: 20px; 
+    }
     form { display: flex; flex-direction: column; align-items: center; }
     .section-block {
       background: #fafafa;
@@ -36,20 +39,35 @@
     }
     label { font-weight: bold; margin-top:10px; display:block; text-align:left; }
     input, select { padding: 7px; margin: 5px 0 10px 0; border-radius: 4px; border: 1px solid #ccc; }
-    button { padding: 7px 18px; background: #1a73e8; color: #fff; border: none; border-radius: 4px; cursor: pointer; font-size: 1rem;}
-    button:hover { background: #1857c1; }
+    
+    button { 
+      padding: 7px 18px; 
+      background: #2596be; 
+      color: #fff; 
+      border: none; 
+      border-radius: 4px; 
+      cursor: pointer; 
+      font-size: 1rem;
+      transition: background 0.2s ease;
+    }
+    button:hover { background: #1d7a99; }
+
     .export { margin-top: 20px; width: 100%; text-align: left; }
     .units-list { margin-bottom:10px; }
     .unit-prefix, .unit-code { display:inline-block; }
     .unit-prefix { width:65px; }
     .unit-code { width:70px; }
+    
     .remove-btn { background:#e63946; margin-left:5px; border:none; border-radius:3px; color:white; padding:3px 9px; font-size:1.1em;}
     .remove-btn:hover { background:#b71c1c;}
-    .add-unit-btn { background: #43aa8b; margin-left: 5px;}
-    .add-unit-btn:hover { background: #218c5b;}
-    .group-title { font-weight: bold; color: #17539e; margin-top: 10px; text-align:left;}
+    
+    .add-unit-btn { background: #2596be; margin-left: 5px;}
+    .add-unit-btn:hover { background: #1d7a99;}
+    
+    .group-title { font-weight: bold; color: #2596be; margin-top: 10px; text-align:left;}
+    
     .unit-row { margin-bottom:4px; }
-    .fleet-count { font-size:1.2em; font-weight:bold; color:#187347; margin-bottom:7px; text-align:left;}
+    .fleet-count { font-size:1.2em; font-weight:bold; color:#2596be; margin-bottom:7px; text-align:left;}
     .time-input { width:110px; margin-right:7px; margin-left:7px; }
     .time-row { display:flex; align-items:center; margin-bottom:10px; flex-direction:row;}
     .ampm-select { width:55px; margin-left:5px; }
@@ -58,165 +76,75 @@
     .disabled-input { background: #e7e7e7; color: #999; }
   </style>
 </head>
-
 <body>
-  <h1>تقرير كراج الميكانيكي</h1>
-  <form id="reportForm" onsubmit="return false;">
-    <div class="section-block">
-      <label>رقم التقرير:</label>
-      <input type="text" id="reportNumber" class="report-input" placeholder="مثال: 5" oninput="updatePreview()">
-    </div>
-    <div class="section-block">
-      <div class="time-row">
-        <label>من الساعة:</label>
-        <input type="text" id="fromTime" class="time-input" placeholder="01:00" maxlength="5" oninput="updatePreview()">
-        <select id="fromTimeAmPm" class="ampm-select" onchange="updatePreview()">
-          <option value="م">م</option>
-          <option value="ص">ص</option>
-        </select>
+  <div class="container">
+    <h1>تقرير كراج الميكانيكي</h1>
+    <form id="reportForm" onsubmit="return false;">
+      <div class="section-block">
+        <label>رقم التقرير:</label>
+        <input type="text" id="reportNumber" class="report-input" placeholder="مثال: 5" oninput="updatePreview()">
       </div>
-      <div class="time-row">
-        <label>حتى الساعة:</label>
-        <input type="text" id="toTime" class="time-input" placeholder="02:00" maxlength="5" oninput="updatePreview()">
-        <select id="toTimeAmPm" class="ampm-select" onchange="updatePreview()">
-          <option value="م">م</option>
-          <option value="ص">ص</option>
-        </select>
+      <div class="section-block">
+        <div class="time-row">
+          <label>من الساعة:</label>
+          <input type="text" id="fromTime" class="time-input" placeholder="01:00" maxlength="5" oninput="updatePreview()">
+          <select id="fromTimeAmPm" class="ampm-select" onchange="updatePreview()">
+            <option value="م">م</option>
+            <option value="ص">ص</option>
+          </select>
+        </div>
+        <div class="time-row">
+          <label>حتى الساعة:</label>
+          <input type="text" id="toTime" class="time-input" placeholder="02:00" maxlength="5" oninput="updatePreview()">
+          <select id="toTimeAmPm" class="ampm-select" onchange="updatePreview()">
+            <option value="م">م</option>
+            <option value="ص">ص</option>
+          </select>
+        </div>
       </div>
-    </div>
-    <!-- الوحدات المطلوبة فقط -->
-    <div class="section-block">
-      <div class="group-title">قيادة الكراج:</div>
-      <div id="garageLead" class="units-list"></div>
-      <button type="button" class="add-unit-btn" onclick="addUnit('garageLead')">إضافة وحدة</button>
-    </div>
-    <div class="section-block">
-      <div class="group-title">مستشار القائد:</div>
-      <div id="adviser" class="units-list"></div>
-      <button type="button" class="add-unit-btn" onclick="addUnit('adviser')">إضافة وحدة</button>
-    </div>
-    <div class="section-block">
-      <div class="group-title">المشرف العام:</div>
-      <div id="generalSupervisor" class="units-list"></div>
-      <button type="button" class="add-unit-btn" onclick="addUnit('generalSupervisor')">إضافة وحدة</button>
-    </div>
-    <div class="section-block">
-      <div class="group-title">المشرف الميداني:</div>
-      <div id="fieldSupervisor" class="units-list"></div>
-      <button type="button" class="add-unit-btn" onclick="addUnit('fieldSupervisor')">إضافة وحدة</button>
-    </div>
-    <div class="section-block">
-      <div class="group-title">مشرفين المناطق:</div>
-      <div id="areaSupervisors" class="units-list"></div>
-      <button type="button" class="add-unit-btn" onclick="addUnit('areaSupervisors')">إضافة وحدة</button>
-    </div>
-	    <div class="section-block">
-      <div class="group-title">مشرفين متدربين :</div>
-      <div id="normals" class="units-list"></div>
-      <button type="button" class="add-unit-btn" onclick="addUnit('normals')">إضافة وحدة</button>
-    </div>
-    <div class="section-block">
-      <div class="group-title">العمليات:</div>
-      <div id="operations" class="units-list"></div>
-      <button type="button" class="add-unit-btn" onclick="addUnit('operations')">إضافة وحدة</button>
-    </div>
-    <div class="section-block">
-      <div class="group-title">نائب العمليات:</div>
-      <div id="operationsDeputy" class="units-list"></div>
-      <button type="button" class="add-unit-btn" onclick="addUnit('operationsDeputy')">إضافة وحدة</button>
-    </div>
-    <div class="section-block">
-      <div class="group-title">مركز الاتصالات:</div>
-      <div id="communicationCenter" class="units-list"></div>
-      <button type="button" class="add-unit-btn" onclick="addUnit('communicationCenter')">إضافة وحدة</button>
-    </div>
-    <div class="section-block">
-      <div class="group-title">السيدات و المعتمدين:</div>
-      <div id="ladiesAndAuthorized" class="units-list"></div>
-      <button type="button" class="add-unit-btn" onclick="addUnit('ladiesAndAuthorized')">إضافة وحدة</button>
-	    </div>
-	  <div class="section-block">
-      <div class="group-title">الجزيرة:</div>
-      <div id="gezera" class="units-list"></div>
-      <button type="button" class="add-unit-btn" onclick="addUnit('gezera')">إضافة وحدة</button>
-    </div>
-    <div class="section-block">
-      <div class="group-title">بوليتو:</div>
-      <div id="bolito" class="units-list"></div>
-      <button type="button" class="add-unit-btn" onclick="addUnit('bolito')">إضافة وحدة</button>
-    </div>
-    </div>
-	  <div class="section-block">
-      <div class="group-title">ساندي:</div>
-      <div id="sandy" class="units-list"></div>
-      <button type="button" class="add-unit-btn" onclick="addUnit('sandy')">إضافة وحدة</button>
-    </div>
-    <div class="section-block">
-      <div class="group-title">لوس:</div>
-      <div id="los" class="units-list"></div>
-      <button type="button" class="add-unit-btn" onclick="addUnit('los')">إضافة وحدة</button>
-    </div>
-  
-	  <div class="section-block">
-      <div class="group-title">ميناء لوس:</div>
-      <div id="losPort" class="units-list"></div>
-      <button type="button" class="add-unit-btn" onclick="addUnit('losPort')">إضافة وحدة</button>
-    </div>
-    <div class="section-block">
-      <div class="group-title">ميناء بوليتو:</div>
-      <div id="bolitoPort" class="units-list"></div>
-      <button type="button" class="add-unit-btn" onclick="addUnit('bolitoPort')">إضافة وحدة</button>
-    </div>
-	<div class="section-block">
-      <div class="group-title">خدمات الاسطول:</div>
-      <div class="fleet-count">
-        عدد:
+      <!-- جميع الأقسام والوحدات -->
+      <div class="section-block"><div class="group-title">قيادة الكراج:</div><div id="garageLead" class="units-list"></div><button type="button" class="add-unit-btn" onclick="addUnit('garageLead')">إضافة وحدة</button></div>
+      <div class="section-block"><div class="group-title">مستشار القائد:</div><div id="adviser" class="units-list"></div><button type="button" class="add-unit-btn" onclick="addUnit('adviser')">إضافة وحدة</button></div>
+      <div class="section-block"><div class="group-title">المشرف العام:</div><div id="generalSupervisor" class="units-list"></div><button type="button" class="add-unit-btn" onclick="addUnit('generalSupervisor')">إضافة وحدة</button></div>
+      <div class="section-block"><div class="group-title">المشرف الميداني:</div><div id="fieldSupervisor" class="units-list"></div><button type="button" class="add-unit-btn" onclick="addUnit('fieldSupervisor')">إضافة وحدة</button></div>
+      <div class="section-block"><div class="group-title">مشرفين المناطق:</div><div id="areaSupervisors" class="units-list"></div><button type="button" class="add-unit-btn" onclick="addUnit('areaSupervisors')">إضافة وحدة</button></div>
+      <div class="section-block"><div class="group-title">مشرفين متدربين :</div><div id="normals" class="units-list"></div><button type="button" class="add-unit-btn" onclick="addUnit('normals')">إضافة وحدة</button></div>
+      <div class="section-block"><div class="group-title">العمليات:</div><div id="operations" class="units-list"></div><button type="button" class="add-unit-btn" onclick="addUnit('operations')">إضافة وحدة</button></div>
+      <div class="section-block"><div class="group-title">نائب العمليات:</div><div id="operationsDeputy" class="units-list"></div><button type="button" class="add-unit-btn" onclick="addUnit('operationsDeputy')">إضافة وحدة</button></div>
+      <div class="section-block"><div class="group-title">مركز الاتصالات:</div><div id="communicationCenter" class="units-list"></div><button type="button" class="add-unit-btn" onclick="addUnit('communicationCenter')">إضافة وحدة</button></div>
+      <div class="section-block"><div class="group-title">السيدات و المعتمدين:</div><div id="ladiesAndAuthorized" class="units-list"></div><button type="button" class="add-unit-btn" onclick="addUnit('ladiesAndAuthorized')">إضافة وحدة</button></div>
+      <div class="section-block"><div class="group-title">الجزيرة:</div><div id="gezera" class="units-list"></div><button type="button" class="add-unit-btn" onclick="addUnit('gezera')">إضافة وحدة</button></div>
+      <div class="section-block"><div class="group-title">بوليتو:</div><div id="bolito" class="units-list"></div><button type="button" class="add-unit-btn" onclick="addUnit('bolito')">إضافة وحدة</button></div>
+      <div class="section-block"><div class="group-title">ساندي:</div><div id="sandy" class="units-list"></div><button type="button" class="add-unit-btn" onclick="addUnit('sandy')">إضافة وحدة</button></div>
+      <div class="section-block"><div class="group-title">لوس:</div><div id="los" class="units-list"></div><button type="button" class="add-unit-btn" onclick="addUnit('los')">إضافة وحدة</button></div>
+      <div class="section-block"><div class="group-title">ميناء لوس:</div><div id="losPort" class="units-list"></div><button type="button" class="add-unit-btn" onclick="addUnit('losPort')">إضافة وحدة</button></div>
+      <div class="section-block"><div class="group-title">ميناء بوليتو:</div><div id="bolitoPort" class="units-list"></div><button type="button" class="add-unit-btn" onclick="addUnit('bolitoPort')">إضافة وحدة</button></div>
+      <div class="section-block"><div class="group-title">خدمات الاسطول:</div><div class="fleet-count">عدد:
         <select id="fleetCount">
-          <option value="00">00</option>
-          <option value="01">01</option>
-          <option value="02">02</option>
-          <option value="03">03</option>
-          <option value="04">04</option>
-          <option value="05">05</option>
-          <option value="06">06</option>
-          <option value="07">07</option>
-          <option value="08">08</option>
-          <option value="09">09</option>
-          <option value="10">10</option>
+          <option value="00">00</option><option value="01">01</option><option value="02">02</option><option value="03">03</option><option value="04">04</option><option value="05">05</option><option value="06">06</option><option value="07">07</option><option value="08">08</option><option value="09">09</option><option value="10">10</option>
         </select>
-      </div>
-	    </div>
-    <div class="section-block">
-      <div class="group-title">تنظيم سير تعديل و تزويد:</div>
-      <div id="trafficOrg" class="units-list"></div>
-      <button type="button" class="add-unit-btn" onclick="addUnit('trafficOrg')">إضافة وحدة</button>
+      </div></div>
+      <div class="section-block"><div class="group-title">تنظيم سير تعديل و تزويد:</div><div id="trafficOrg" class="units-list"></div><button type="button" class="add-unit-btn" onclick="addUnit('trafficOrg')">إضافة وحدة</button></div>
+      <div class="section-block"><div class="group-title">البحث والإنقاذ:</div><div id="rescue" class="units-list"></div><button type="button" class="add-unit-btn" onclick="addUnit('rescue')">إضافة وحدة</button></div>
+      <button type="button" onclick="exportReport()">تحديث التقرير</button>
+      <button type="button" onclick="copyReport()">نسخ التقرير</button>
+    </form>
+    <div class="export">
+      <h2>نموذج التقرير:</h2>
+      <pre id="reportPreview"></pre>
     </div>
-	  <div class="section-block">
-      <div class="group-title">البحث والإنقاذ:</div>
-      <div id="rescue" class="units-list"></div>
-      <button type="button" class="add-unit-btn" onclick="addUnit('rescue')">إضافة وحدة</button>
-    </div>
- 
-  
-    <!-- إضافة وحدتي ساندي وبوليتو -->
-  
-   <button type="button" onclick="exportReport()">تحديث التقرير</button>
-<button type="button" onclick="copyReport()">نسخ التقرير</button>
-  </form>
-  <div class="export">
-    <h2>نموذج التقرير:</h2>
-    <pre id="reportPreview"></pre>
   </div>
+
   <script>
-  function copyReport() {
-  const reportText = document.getElementById('reportPreview').textContent;
-  navigator.clipboard.writeText(reportText).then(() => {
-    alert("تم نسخ التقرير بنجاح ✅");
-  }).catch(err => {
-    alert("حدث خطأ أثناء النسخ ❌");
-    console.error(err);
-  });
-}
+    function copyReport() {
+      const reportText = document.getElementById('reportPreview').textContent;
+      navigator.clipboard.writeText(reportText).then(() => {
+        alert("تم نسخ التقرير بنجاح ✅");
+      }).catch(err => {
+        alert("حدث خطأ أثناء النسخ ❌");
+        console.error(err);
+      });
+    }
     function addUnit(areaId) {
       const parent = document.getElementById(areaId);
       const unitDiv = document.createElement('div');
@@ -224,14 +152,7 @@
       const prefixSelect = document.createElement('select');
       prefixSelect.className = 'unit-prefix';
       [
-        {v: 'G', t: 'G'},
-        {v: 'H', t: 'H'},
-        {v: 'E', t: 'E'},
-        {v: 'P', t: 'P'},
-		{v: 'A', t: 'A'},
-		{v: 'F', t: 'F'},
-		{v: 'M', t: 'M'},
-		{v: 'R', t: 'R'},
+        {v: 'G', t: 'G'},{v: 'H', t: 'H'},{v: 'E', t: 'E'},{v: 'P', t: 'P'},{v: 'A', t: 'A'},{v: 'F', t: 'F'},{v: 'M', t: 'M'},{v: 'R', t: 'R'},
       ].forEach(optObj=>{
         const opt = document.createElement('option');
         opt.value = optObj.v;
@@ -265,43 +186,41 @@
       unitDiv.appendChild(codeInput);
       unitDiv.appendChild(removeBtn);
       parent.appendChild(unitDiv);
-
       updatePreview();
     }
 
- function getUnits(areaId) {
-  const parent = document.getElementById(areaId);
-  const units = [];
-  parent.querySelectorAll('.unit-row').forEach(unitRow => {
-    const prefix = unitRow.querySelector('.unit-prefix').value;
-    const code = unitRow.querySelector('.unit-code').value.trim();
-    if(areaId === 'sandy' || areaId === 'bolito'|| areaId === 'gezera'|| areaId === 'los') {
-      if(prefix !== 'لا يوجد' && code) {
-        units.push(`${prefix}-${code}`); // الحرف ورقم الوحدة بدون @
-      } else if (code) {
-        units.push(code); // لو مفيش prefix
-      }
-    } else {
-      if(prefix !== 'لا يوجد' && code) {
-        units.push(`@${prefix}-${code}`);
-      }
+    function getUnits(areaId) {
+      const parent = document.getElementById(areaId);
+      const units = [];
+      parent.querySelectorAll('.unit-row').forEach(unitRow => {
+        const prefix = unitRow.querySelector('.unit-prefix').value;
+        const code = unitRow.querySelector('.unit-code').value.trim();
+        if(areaId === 'sandy' || areaId === 'bolito'|| areaId === 'gezera'|| areaId === 'los') {
+          if(prefix !== 'لا يوجد' && code) {
+            units.push(`${prefix}-${code}`);
+          } else if (code) {
+            units.push(code);
+          }
+        } else {
+          if(prefix !== 'لا يوجد' && code) {
+            units.push(`@${prefix}-${code}`);
+          }
+        }
+      });
+      return units;
     }
-  });
-  return units;
-}
 
-function generateLine(label, arr, emptyLabel, newLineAfterLabel = false) {
-  let filteredArr = arr.filter(v => v);
-  let out = newLineAfterLabel ? `${label}\n` : `${label} `;
-  
-  if (filteredArr.length) {
-    out += filteredArr.join('\n');
-  } else {
-    out += emptyLabel || "لايوجد";
-  }
-  out += '\n\n';
-  return out;
-}
+    function generateLine(label, arr, emptyLabel, newLineAfterLabel = false) {
+      let filteredArr = arr.filter(v => v);
+      let out = newLineAfterLabel ? `${label}\n` : `${label} `;
+      if (filteredArr.length) {
+        out += filteredArr.join('\n');
+      } else {
+        out += emptyLabel || "لايوجد";
+      }
+      out += '\n\n';
+      return out;
+    }
 
     function generateReport() {
       const reportNumber = document.getElementById('reportNumber').value.trim();
@@ -313,35 +232,32 @@ function generateLine(label, arr, emptyLabel, newLineAfterLabel = false) {
       let report = `تم استلام التقرير الميداني لـكراج الميكانيكي\n\n`;
       report += `تقرير رقم ( ${reportNumber} )\n\n`;
       report += `من الساعه ${fromTime} (${fromTimeAmPm})\nحتى الساعه ${toTime} (${toTimeAmPm})\n\n`;
-
       report += generateLine("قيادة الكراج:", getUnits('garageLead'));
       report += generateLine("مستشار القائد:", getUnits('adviser'));
       report += generateLine("المشرف العام:", getUnits('generalSupervisor'));
       report += generateLine("المشرف الميداني:", getUnits('fieldSupervisor'));
-	  report += generateLine("مشرفين المناطق:", getUnits('areaSupervisors'));
+      report += generateLine("مشرفين المناطق:", getUnits('areaSupervisors'));
       report += generateLine("مشرفين متدربين:", getUnits('normals'));
       report += generateLine("العمليات:", getUnits('operations'));
       report += generateLine("نائب العمليات:", getUnits('operationsDeputy'));
       report += generateLine("مركز الاتصالات:", getUnits('communicationCenter'));
       report += generateLine("السيدات و المعتمدين:", getUnits('ladiesAndAuthorized'));
-	report += generateLine("الجزيرة:", getUnits('gezera'), null, true);
-     report += generateLine("بوليتو:", getUnits('bolito'), null, true);
-   report += generateLine("ساندي:", getUnits('sandy'), null, true);
-report += generateLine("لوس:", getUnits('los'), null, true);
+      report += generateLine("الجزيرة:", getUnits('gezera'), null, true);
+      report += generateLine("بوليتو:", getUnits('bolito'), null, true);
+      report += generateLine("ساندي:", getUnits('sandy'), null, true);
+      report += generateLine("لوس:", getUnits('los'), null, true);
       report += `خدمات الاسطول :\nعدد / ${fleetCount}\n`;
       report += generateLine("ميناء لوس:", getUnits('losPort'));
       report += generateLine("ميناء بوليتو:", getUnits('bolitoPort'));
       report += generateLine("تنظيم سير تعديل و تزويد:", getUnits('trafficOrg'));
       report += generateLine("البحث والإنقاذ:", getUnits('rescue'));
-      // إضافة ساندي وبوليتو
- 
-
       return report;
     }
+
     function updatePreview() {
       document.getElementById('reportPreview').textContent = generateReport();
     }
-    // الأقسام المطلوبة
+
     const sections = [
       'garageLead','adviser','generalSupervisor','fieldSupervisor',
       'areaSupervisors','operations','operationsDeputy','communicationCenter','ladiesAndAuthorized',
@@ -351,18 +267,14 @@ report += generateLine("لوس:", getUnits('los'), null, true);
     updatePreview();
 
     function exportReport() {
-  const report = generateReport();
-  document.getElementById('reportPreview').textContent = report;
-  // تم حذف كود إنشاء الملف والرابط
-}
+      const report = generateReport();
+      document.getElementById('reportPreview').textContent = report;
+    }
+
     document.getElementById('fleetCount').addEventListener('change', updatePreview);
     document.getElementById('fromTimeAmPm').addEventListener('change', updatePreview);
     document.getElementById('toTimeAmPm').addEventListener('change', updatePreview);
     document.getElementById('reportNumber').addEventListener('input', updatePreview);
-    document.getElementById('fromTime').addEventListener('input', updatePreview);
-    document.getElementById('toTime').addEventListener('input', updatePreview);
   </script>
 </body>
 </html>
-
-
